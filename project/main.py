@@ -9,7 +9,7 @@ class App(CTk.CTk):
 		super().__init__()
 
 		self.geometry("960x700")
-		self.title("Diplom Project")
+		self.title("Oleksandr Shport C-11 - Diplom Project")
 		self.resizable(False, False)
 		#* ПУНКТ №1
 		self.key_generator_label = CTk.CTkLabel(master=self, text="1) Генератор простого числа (Перевірка на простоту)", font=("Times New Roman", 16))
