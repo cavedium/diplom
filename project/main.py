@@ -9,7 +9,7 @@ class App(CTk.CTk):
 		super().__init__()
 
 		self.geometry("960x700")
-		self.title("Oleksandr Shport C-11 - Diplom Project")
+		self.title("ДОСЛІДЖЕННЯ ВЛАСТИВОСТЕЙ МУЛЬТИПЛІКАТИВНОЇ ГРУПИ КІЛЬЦЯ ЛИШКІВ")
 		self.resizable(False, False)
 		#* ПУНКТ №1
 		self.key_generator_label = CTk.CTkLabel(master=self, text="1) Генератор простого числа (Перевірка на простоту)", font=("Times New Roman", 16))
@@ -141,13 +141,18 @@ class App(CTk.CTk):
 
 	def next_generator(self): #TODO НАПИСАТИ ФУНКЦІЮ ПОШУКУ НАСТУПНОГО ГЕНЕРАТОРА
 		try:
-			q_list = []
-			for p, e in prime_factors.prime_factors(int(int(self.ord_of_group_entry.get()))):
-					q_list.append(p)
-			self.next_generator_entry.delete(0, "end")
-			self.next_generator_entry.insert(0, nextGenerators.find_next_generator(int(self.entry_key.get()), int(self.memory_entry.get()), q_list))
-			self.memory_entry.delete(0, "end")
-			self.memory_entry.insert(0, (int(self.next_generator_entry.get()) + 1))
+			if self.count_of_generators_entry.get() == "0":
+				self.show_error("КІЛЬКІСТЬ ГЕНЕРАТОРІВ ДОРІВНЮЄ 0!")
+			else:
+				if self.ord_of_element_entry.get() == "":
+					self.show_error("ВВЕДІТЬ ЕЛЕМЕНТ ГРУПИ В ПУНКТІ 4!")
+				q_list = []
+				for p, e in prime_factors.prime_factors(int(int(self.ord_of_group_entry.get()))):
+						q_list.append(p)
+				self.next_generator_entry.delete(0, "end")
+				self.next_generator_entry.insert(0, nextGenerators.find_next_generator(int(self.entry_key.get()), int(self.memory_entry.get()), q_list))
+				self.memory_entry.delete(0, "end")
+				self.memory_entry.insert(0, (int(self.next_generator_entry.get()) + 1))
 			#current = int(self.entry_ord_element_of_group.get())
 			#next_gen, step = nextGenerators.find_next_generator(current, int(self.entry_key.get()), int(self.step_entry.get()))
 			#if next_gen:
@@ -174,11 +179,17 @@ class App(CTk.CTk):
 			self.show_error("ВВЕДІТЬ ЕЛЕМЕНТ ГРУПИ В ПУНКТІ 4!")
 		else:
 			if nextGenerators.is_generator(int(self.entry_ord_element_of_group.get()), int(self.entry_key.get())) == True:
-				self.ord_the_element_label.configure(text="Генератор групи")
+				if self.count_of_generators_entry.get() == "0":
+					self.ord_the_element_label.configure(text="Генератори відсутні")
+				else:
+					self.ord_the_element_label.configure(text="Генератор групи")
 				self.memory_entry.delete(0, "end")
 				self.memory_entry.insert(0, self.entry_ord_element_of_group.get())
 			else:
-				self.ord_the_element_label.configure(text="Не Генератор групи")
+				if self.count_of_generators_entry.get() == "0":
+					self.ord_the_element_label.configure(text="Генератори відсутні")
+				else:
+					self.ord_the_element_label.configure(text="Не Генератор групи")
 			self.ord_of_element_entry.delete(0, "end")
 			self.ord_of_element_entry.insert(0, int(prime_factors.ord_of_element(int(self.entry_ord_element_of_group.get()), int(self.entry_key.get()))))
 
@@ -202,21 +213,24 @@ class App(CTk.CTk):
 				#self.entry_key.configure(placeholder_text_color="red", border_color="red")
 				#self.show_error("ВВЕДІТЬ ЧИСЛО ДЛЯ ПЕРЕВІРКИ!")
 		else:
-			self.element_of_group_entry.configure(placeholder_text_color="#FFFFFF", border_color="#565B5E")
-			self.entry_key.configure(placeholder_text_color="#FFFFFF", border_color="#565B5E")
-			if multiplicative_inversion.invertedElement(int(self.element_of_group_entry.get()), int(self.entry_key.get())) == False:
-				self.element_of_group_inversion_entry.delete(0, "end")
-				self.element_of_group_inversion_entry.insert(0, int(multiplicative_inversion.invertedElement(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
-				self.nsd_entry.delete(0, "end")
-				self.nsd_entry.insert(0, int(multiplicative_inversion.NSD(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
-				#self.element_of_group_inversion_entry.configure(placeholder_text="Не є елементом групи")
-				self.formula_label.configure(text=f"{self.element_of_group_entry.get()} * {self.element_of_group_inversion_entry.get()}mod{self.entry_key.get()} = {self.nsd_entry.get()}\nНЕ Є ЕЛЕМЕНТОМ ГРУПИ")
+			if int(self.element_of_group_entry.get()) > 0:
+				self.element_of_group_entry.configure(placeholder_text_color="#FFFFFF", border_color="#565B5E")
+				self.entry_key.configure(placeholder_text_color="#FFFFFF", border_color="#565B5E")
+				if multiplicative_inversion.invertedElement(int(self.element_of_group_entry.get()), int(self.entry_key.get())) == False:
+					self.element_of_group_inversion_entry.delete(0, "end")
+					self.element_of_group_inversion_entry.insert(0, int(multiplicative_inversion.invertedElement(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
+					self.nsd_entry.delete(0, "end")
+					self.nsd_entry.insert(0, int(multiplicative_inversion.NSD(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
+					#self.element_of_group_inversion_entry.configure(placeholder_text="Не є елементом групи")
+					self.formula_label.configure(text=f"{self.element_of_group_entry.get()} * {self.element_of_group_inversion_entry.get()}mod{self.entry_key.get()} = {self.nsd_entry.get()}\nНЕ Є ЕЛЕМЕНТОМ ГРУПИ")
+				else:
+					self.element_of_group_inversion_entry.delete(0, "end")
+					self.element_of_group_inversion_entry.insert(0, int(multiplicative_inversion.invertedElement(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
+					self.nsd_entry.delete(0, "end")
+					self.nsd_entry.insert(0, int(multiplicative_inversion.NSD(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
+					self.formula_label.configure(text=f"{self.element_of_group_entry.get()} * {self.element_of_group_inversion_entry.get()}mod{self.entry_key.get()} = {self.nsd_entry.get()}\nЄ ЕЛЕМЕНТОМ ГРУПИ")
 			else:
-				self.element_of_group_inversion_entry.delete(0, "end")
-				self.element_of_group_inversion_entry.insert(0, int(multiplicative_inversion.invertedElement(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
-				self.nsd_entry.delete(0, "end")
-				self.nsd_entry.insert(0, int(multiplicative_inversion.NSD(int(self.element_of_group_entry.get()), int(self.entry_key.get()))))
-				self.formula_label.configure(text=f"{self.element_of_group_entry.get()} * {self.element_of_group_inversion_entry.get()}mod{self.entry_key.get()} = {self.nsd_entry.get()}\nЄ ЕЛЕМЕНТОМ ГРУПИ")
+				self.show_error("ЕЛЕМЕНТ НЕ МОЖЕ БУТИ ВІД'ЄМНИМ\nВВЕДІТЬ ЕЛЕМЕНТ ВІД 1 ДО МОДУЛЯ ГРУПИ")
 
 	def slider_event(self, value):
 		self.key_length_entry.delete(0, "end")
