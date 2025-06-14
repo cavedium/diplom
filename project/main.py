@@ -126,13 +126,13 @@ class App(CTk.CTk):
 		self.ord_the_element_label = CTk.CTkLabel(master=self.ord_of_element_frame, text="", width=175)
 		self.ord_the_element_label.grid(row=4, column=1)
 		#* ПУНКТ №5
-		self.next_generator_label = CTk.CTkLabel(master=self.ord_of_element_frame, text="5) Вичислення наступного генератора", font=("Times New Roman", 16),)
+		self.next_generator_label = CTk.CTkLabel(master=self.ord_of_element_frame, text="5) Обчислення наступного генератора", font=("Times New Roman", 16),)
 		self.next_generator_label.grid(row=0, column=4, padx=(0, 0), pady=(0, 0))
 		
 		self.next_generator_entry = CTk.CTkEntry(master=self.ord_of_element_frame, width=200, placeholder_text="Значення генератора")
 		self.next_generator_entry.grid(row=1, column=4)
 		
-		self.next_generator_btn = CTk.CTkButton(master=self.ord_of_element_frame, text="Вичислити наступний генератор", width=200,
+		self.next_generator_btn = CTk.CTkButton(master=self.ord_of_element_frame, text="Обчислити наступний генератор", width=200,
 										command=self.next_generator)
 		self.next_generator_btn.grid(row=2, column=4, pady=(10, 0))
 		
@@ -146,6 +146,11 @@ class App(CTk.CTk):
 			else:
 				if self.ord_of_element_entry.get() == "":
 					self.show_error("ВВЕДІТЬ ЕЛЕМЕНТ ГРУПИ В ПУНКТІ 4!")
+				if self.ord_of_element_entry.get() != self.ord_of_group_entry.get():
+					self.show_error("Вказаний елемент\nне є генератором групи.\nЗнайдіть найближчий генератор")
+					self.next_generator_entry.delete(0, "end")
+					self.next_generator_entry.insert(0, "Помилка")
+					self.memory_entry.delete(0, "end")
 				q_list = []
 				for p, e in prime_factors.prime_factors(int(int(self.ord_of_group_entry.get()))):
 						q_list.append(p)
